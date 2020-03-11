@@ -1,72 +1,59 @@
 package primegenerator;
 
 public class Primes {
+    private static final int numberOfPrimes = 1000;
+    private static final int rowsPerPage = 50;
+    private static final int columnsPerPage = 4;
+
     public static void main(String[] args) {
-        final int M = 1000;
-        final int RR = 50;
-        final int CC = 4;
-        final int ORDMAX = 30;
-        int[] P = new int[M + 1];
-        int PAGENUMBER;
-        int PAGEOFFSET;
-        int ROWOFFSET;
-        int C;
-        int J;
-        int K;
-        boolean JPRIME;
-        int ORD;
-        int SQUARE;
-        int N = 0;
-        int[] MULT = new int[ORDMAX + 1];
+        PrimeGenerator primeGenerator = new PrimeGenerator();
+        int[] primes = primeGenerator.generatePrimes();
+        PrimePrinter primePrinter = new PrimePrinter(primes, numberOfPrimes);
+        primePrinter.printPrimes(rowsPerPage, columnsPerPage);
+    }
+}
 
-        J = 1;
-        K = 1;
-        P[1] = 2;
-        ORD = 2;
-        SQUARE = 9;
+class PrimeGenerator {
+    private final int numberOfPrimes = 1000;
+    private final int ordmax = 30;
+    private final int[] primes = new int[numberOfPrimes + 1];
+    private int primeCandidate = 1;
+    private int primeIndex = 1;
+    private int ord = 2;
+    private int square = 9;
+    private final int[] multiples = new int[ordmax + 1];
 
-        while (K < M) {
-            do {
-                J += 2;
-                if (J == SQUARE) {
-                    ORD++;
-                    SQUARE = P[ORD] * P[ORD];
-                    MULT[ORD - 1] = J;
-                }
-                N = 2;
-                JPRIME = true;
-                while (N < ORD && JPRIME) {
-                    while (MULT[N] < J) {
-                        MULT[N] += P[N] + P[N];
-                    }
-                    if (MULT[N] == J) {
-                        JPRIME = false;
-                    }
-                    N++;
-                }
-            } while (!JPRIME);
-            K++;
-            P[K] = J;
+    public int[] generatePrimes() {
+        primes[1] = 2;
+
+        while (primeIndex < numberOfPrimes) {
+            findNextPrime();
+            primeIndex++;
+            primes[primeIndex] = primeCandidate;
         }
-        PAGENUMBER = 1;
-        PAGEOFFSET = 1;
-        while (PAGEOFFSET <= M) {
-            System.out.print("The First ");
-            System.out.print(M);
-            System.out.print(" Prime Numbers --- Page ");
-            System.out.println(PAGENUMBER);
-            System.out.println();
-            for (ROWOFFSET = PAGEOFFSET; ROWOFFSET <= PAGEOFFSET + RR  - 1; ++ROWOFFSET) {
-                for (C = 0; C <= CC - 1; ++C) {
-                    if (ROWOFFSET + C * RR  <= M) {
-                        System.out.printf("%10d", P[ROWOFFSET + C * RR ]);
-                    }
-                }
-                System.out.println();
+        return primes;
+    }
+
+    private void findNextPrime() {
+        boolean probablyPrime;
+        do {
+            primeCandidate += 2;
+            if (primeCandidate == square) {
+                ord++;
+                square = primes[ord] * primes[ord];
+                multiples[ord - 1] = primeCandidate;
             }
-            System.out.println();
-            PAGENUMBER++;
-            PAGEOFFSET += RR  * CC;
-        }
+            int multipleIndex = 2;
+            probablyPrime = true;
+            while (multipleIndex < ord && probablyPrime) {
+                while (multiples[multipleIndex] < primeCandidate) {
+                    multiples[multipleIndex] += primes[multipleIndex] + primes[multipleIndex];
+                }
+                if (multiples[multipleIndex] == primeCandidate) {
+                    probablyPrime = false;
+                }
+                multipleIndex++;
+            }
+        } while (!probablyPrime);
     }
 }

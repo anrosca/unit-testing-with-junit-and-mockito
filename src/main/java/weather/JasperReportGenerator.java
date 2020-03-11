@@ -1,32 +1,30 @@
-package testdouble.dummy;
+package weather;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
 public class JasperReportGenerator {
 
-    private static final String REPORT_TEMPLATE_PATH = "/reportTemplate.jrxml";
+    private static final String REPORT_TEMPLATE_PATH = "/reportTemplate.jasper";
 
-    public byte[] generate(WeatherStation weatherStation, String cityName, LocalDate date) {
+    public byte[] generate(List<WeatherData> weatherData) {
         try {
-            return tryGenerateReport(weatherStation, cityName, date);
+            return tryGenerateReport(weatherData);
         } catch (JRException e) {
             throw new ReportGenerationException();
         }
     }
 
-    private byte[] tryGenerateReport(WeatherStation weatherStation, String cityName, LocalDate date) throws JRException {
-        List<WeatherData> weatherData = weatherStation.getMeasurementsFor(cityName, date);
+    private byte[] tryGenerateReport(List<WeatherData> weatherData) throws JRException {
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(weatherData);
-        JasperDesign jasperDesign = JRXmlLoader.load(getClass().getResourceAsStream(REPORT_TEMPLATE_PATH));
-        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(getClass().getResourceAsStream(REPORT_TEMPLATE_PATH));
         return fillAndExportReport(dataSource, jasperReport);
     }
 

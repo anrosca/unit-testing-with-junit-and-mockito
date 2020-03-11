@@ -1,11 +1,9 @@
-package testdouble.dummy;
+package weather;
 
 import java.time.LocalDate;
 
 public interface ReportGenerationContext {
     void generateReportFor(LocalDate date);
 
-    WeatherStation getWeatherStation();
-
-    String getCityName();
+    void generateMonthlyReportFor(LocalDate date);
 }
