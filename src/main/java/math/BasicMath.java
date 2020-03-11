@@ -12,7 +12,7 @@ public class BasicMath {
 
         int product = 0;
         while (a-- > 0)
-            product += b;
+            product = product + b;
 
         return negativeProduct ? -product : product;
     }

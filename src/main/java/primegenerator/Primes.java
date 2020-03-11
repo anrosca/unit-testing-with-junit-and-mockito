@@ -56,17 +56,17 @@ public class Primes {
             System.out.print(" Prime Numbers --- Page ");
             System.out.println(PAGENUMBER);
             System.out.println();
-            for (ROWOFFSET = PAGEOFFSET; ROWOFFSET <= PAGEOFFSET + RR  - 1; ++ROWOFFSET) {
+            for (ROWOFFSET = PAGEOFFSET; ROWOFFSET <= PAGEOFFSET + RR - 1; ++ROWOFFSET) {
                 for (C = 0; C <= CC - 1; ++C) {
-                    if (ROWOFFSET + C * RR  <= M) {
-                        System.out.printf("%10d", P[ROWOFFSET + C * RR ]);
+                    if (ROWOFFSET + C * RR <= M) {
+                        System.out.printf("%10d", P[ROWOFFSET + C * RR]);
                     }
                 }
                 System.out.println();
             }
             System.out.println();
             PAGENUMBER++;
-            PAGEOFFSET += RR  * CC;
+            PAGEOFFSET += RR * CC;
         }
     }
 }

@@ -1,4 +1,4 @@
-package testdouble.dummy;
+package weather;
 
 public class WeatherData {
     private String title;

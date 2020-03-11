@@ -1,4 +1,4 @@
-package testdouble.dummy;
+package weather;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class ReportGenerationServiceTest {
     }
 
     @Test
-    public void testInvalidDate() {
+    public void testGenerateReport_withInvalidDate() {
         LocalDate date = null;
         ReportGenerationContext context = null;
 

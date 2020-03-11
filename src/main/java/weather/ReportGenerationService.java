@@ -1,11 +1,12 @@
-package testdouble.dummy;
+package weather;
 
 import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
 public class ReportGenerationService {
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public void generateReport(LocalDate date, ReportGenerationContext context) {
         if (isInvalidDate(date)) {
@@ -14,22 +15,17 @@ public class ReportGenerationService {
         context.generateReportFor(date);
     }
 
-    public void generateMonthlyReports(ReportGenerationContext context) {
-        LocalDate date = LocalDate.now().minusMonths(1);
+    public void generateMonthlyReport(ReportGenerationContext context) {
+        LocalDate date = LocalDate.now();
         if (date.getDayOfMonth() == 1) {
-            for (int day = 1; day <= date.lengthOfMonth(); ++day) {
-                generateReport(date.withDayOfMonth(day), context);
-            }
+            context.generateMonthlyReportFor(date.minusMonths(1));
         }
     }
 
-    public void generateMonthlyReportsAsync(ReportGenerationContext context) {
-        LocalDate date = LocalDate.now().minusMonths(1);
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+    public void generateMonthlyReportAsync(ReportGenerationContext context) {
+        LocalDate date = LocalDate.now();
         if (date.getDayOfMonth() == 1) {
-            IntStream.rangeClosed(1, date.lengthOfMonth()).forEach(day -> {
-                executorService.submit(() -> generateReport(date.withDayOfMonth(day), context));
-            });
+            executorService.submit(() -> context.generateMonthlyReportFor(date.minusMonths(1)));
         }
     }
 
@@ -43,8 +39,9 @@ public class ReportGenerationService {
     public static void main(String[] args) {
         ReportGenerationService reportGenerationService = new ReportGenerationService();
         JasperReportGenerator generator = new JasperReportGenerator();
-        WeatherStation weatherStation = new WeatherStation();
-        ReportGenerationContextImpl context = new ReportGenerationContextImpl(generator, weatherStation, "Chisinau");
+        WeatherStation weatherStation = new WeatherStation(new WeatherService());
+        ReportGenerationContextImpl context =
+                new ReportGenerationContextImpl(generator, weatherStation, "Chisinau");
         reportGenerationService.generateReport(LocalDate.now(), context);
     }
 }
